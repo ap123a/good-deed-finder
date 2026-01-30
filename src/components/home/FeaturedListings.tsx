@@ -1,77 +1,14 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import ListingCard, { Listing } from "@/components/listings/ListingCard";
+import ListingCard from "@/components/listings/ListingCard";
 import { motion } from "framer-motion";
-
-const featuredListings: Listing[] = [
-  {
-    id: "1",
-    title: "Palīdzība dzīvnieku patversmē",
-    organization: "Dzīvnieku draugi",
-    location: "Rīga",
-    category: "Dzīvnieki",
-    description: "Meklējam brīvprātīgos, kas palīdzētu rūpēties par kaķiem un suņiem patversmē. Darbs ietver barošanu, pastaigas un spēlēšanos.",
-    timeCommitment: "4-8h nedēļā",
-    spots: 5,
-    isNew: true,
-  },
-  {
-    id: "2",
-    title: "Bērnu nometnes vadītājs",
-    organization: "Latvijas Skautu un Gaidu organizācija",
-    location: "Jūrmala",
-    category: "Izglītība",
-    description: "Vasaras nometnes organizēšana un vadīšana bērniem vecumā no 8-14 gadiem. Nepieciešama pieredze darbā ar bērniem.",
-    timeCommitment: "Pilna laika (2 nedēļas)",
-    spots: 10,
-    isUrgent: true,
-  },
-  {
-    id: "3",
-    title: "Vides sakopšanas talka",
-    organization: "Zaļā Latvija",
-    location: "Liepāja",
-    category: "Vide",
-    description: "Piedalies pludmales sakopšanas talkā! Nodrošinām inventāru un ēdināšanu. Aicinām visus dabas draugus.",
-    timeCommitment: "1 diena",
-    spots: 50,
-    isNew: true,
-  },
-  {
-    id: "4",
-    title: "Senioru apmeklēšana veco ļaužu namā",
-    organization: "Sarkanais Krusts",
-    location: "Daugavpils",
-    category: "Sociālais darbs",
-    description: "Pavadi laiku ar senioriem, izlasi grāmatu, parunājies vai vienkārši uzklausi. Tava klātbūtne var kādam padarīt dienu gaišāku.",
-    timeCommitment: "2-4h nedēļā",
-    spots: 8,
-  },
-  {
-    id: "5",
-    title: "IT konsultants nevalstiskām organizācijām",
-    organization: "Tech4Good",
-    location: "Tiešsaiste",
-    category: "IT",
-    description: "Palīdzi NVO ar mājas lapu izveidi, sociālo tīklu pārvaldību un digitālo risinājumu ieviešanu.",
-    timeCommitment: "Elastīgs grafiks",
-    spots: 15,
-    isOnline: true,
-  },
-  {
-    id: "6",
-    title: "Pasākumu organizatora palīgs",
-    organization: "Latvijas Kultūras fonds",
-    location: "Rīga",
-    category: "Kultūra",
-    description: "Palīdzība kultūras pasākumu organizēšanā - apmeklētāju sagaidīšana, informācijas sniegšana, vispārēja koordinācija.",
-    timeCommitment: "Pasākumu laikā",
-    spots: 20,
-  },
-];
+import { useFeaturedListings } from "@/hooks/useListings";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const FeaturedListings = () => {
+  const { data: listings, isLoading, error } = useFeaturedListings(6);
+
   return (
     <section className="py-16 md:py-24 bg-background">
       <div className="container">
@@ -98,11 +35,33 @@ const FeaturedListings = () => {
           </Button>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featuredListings.map((listing, index) => (
-            <ListingCard key={listing.id} listing={listing} index={index} />
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="bg-card rounded-xl border border-border p-5">
+                <Skeleton className="h-6 w-24 mb-4" />
+                <Skeleton className="h-6 w-full mb-2" />
+                <Skeleton className="h-4 w-32 mb-3" />
+                <Skeleton className="h-16 w-full mb-4" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+            ))}
+          </div>
+        ) : error ? (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">Neizdevās ielādēt sludinājumus</p>
+          </div>
+        ) : listings && listings.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {listings.map((listing, index) => (
+              <ListingCard key={listing.id} listing={listing} index={index} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">Nav pieejamu sludinājumu</p>
+          </div>
+        )}
       </div>
     </section>
   );

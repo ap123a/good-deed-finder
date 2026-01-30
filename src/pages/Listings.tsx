@@ -1,15 +1,15 @@
 import { useState } from "react";
 import Layout from "@/components/layout/Layout";
-import ListingCard, { Listing } from "@/components/listings/ListingCard";
+import ListingCard from "@/components/listings/ListingCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { 
   Search, 
   MapPin, 
   SlidersHorizontal, 
   X,
-  ChevronDown
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -19,95 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-const allListings: Listing[] = [
-  {
-    id: "1",
-    title: "Palīdzība dzīvnieku patversmē",
-    organization: "Dzīvnieku draugi",
-    location: "Rīga",
-    category: "Dzīvnieki",
-    description: "Meklējam brīvprātīgos, kas palīdzētu rūpēties par kaķiem un suņiem patversmē. Darbs ietver barošanu, pastaigas un spēlēšanos.",
-    timeCommitment: "4-8h nedēļā",
-    spots: 5,
-    isNew: true,
-  },
-  {
-    id: "2",
-    title: "Bērnu nometnes vadītājs",
-    organization: "Latvijas Skautu un Gaidu organizācija",
-    location: "Jūrmala",
-    category: "Izglītība",
-    description: "Vasaras nometnes organizēšana un vadīšana bērniem vecumā no 8-14 gadiem. Nepieciešama pieredze darbā ar bērniem.",
-    timeCommitment: "Pilna laika (2 nedēļas)",
-    spots: 10,
-    isUrgent: true,
-  },
-  {
-    id: "3",
-    title: "Vides sakopšanas talka",
-    organization: "Zaļā Latvija",
-    location: "Liepāja",
-    category: "Vide",
-    description: "Piedalies pludmales sakopšanas talkā! Nodrošinām inventāru un ēdināšanu. Aicinām visus dabas draugus.",
-    timeCommitment: "1 diena",
-    spots: 50,
-    isNew: true,
-  },
-  {
-    id: "4",
-    title: "Senioru apmeklēšana veco ļaužu namā",
-    organization: "Sarkanais Krusts",
-    location: "Daugavpils",
-    category: "Sociālais darbs",
-    description: "Pavadi laiku ar senioriem, izlasi grāmatu, parunājies vai vienkārši uzklausi. Tava klātbūtne var kādam padarīt dienu gaišāku.",
-    timeCommitment: "2-4h nedēļā",
-    spots: 8,
-  },
-  {
-    id: "5",
-    title: "IT konsultants nevalstiskām organizācijām",
-    organization: "Tech4Good",
-    location: "Tiešsaiste",
-    category: "IT",
-    description: "Palīdzi NVO ar mājas lapu izveidi, sociālo tīklu pārvaldību un digitālo risinājumu ieviešanu.",
-    timeCommitment: "Elastīgs grafiks",
-    spots: 15,
-    isOnline: true,
-  },
-  {
-    id: "6",
-    title: "Pasākumu organizatora palīgs",
-    organization: "Latvijas Kultūras fonds",
-    location: "Rīga",
-    category: "Kultūra",
-    description: "Palīdzība kultūras pasākumu organizēšanā - apmeklētāju sagaidīšana, informācijas sniegšana, vispārēja koordinācija.",
-    timeCommitment: "Pasākumu laikā",
-    spots: 20,
-  },
-  {
-    id: "7",
-    title: "Tulkotājs ukraiņu bēgļiem",
-    organization: "Gribu palīdzēt bēgļiem",
-    location: "Rīga",
-    category: "Sociālais darbs",
-    description: "Nepieciešami brīvprātīgie ar ukraiņu vai krievu valodas zināšanām, lai palīdzētu ar tulkošanu.",
-    timeCommitment: "Pēc nepieciešamības",
-    spots: 25,
-    isUrgent: true,
-  },
-  {
-    id: "8",
-    title: "Mākslas darbnīcu vadīšana bērniem",
-    organization: "Bērnu mākslas centrs",
-    location: "Ventspils",
-    category: "Kultūra",
-    description: "Radošās darbnīcas vadīšana bērniem vecumā no 5-12 gadiem. Nepieciešama pieredze mākslā un darbā ar bērniem.",
-    timeCommitment: "4h nedēļā",
-    spots: 3,
-    isNew: true,
-  },
-];
+import { useListings } from "@/hooks/useListings";
 
 const categories = [
   "Visi",
@@ -136,19 +48,10 @@ const Listings = () => {
   const [selectedCity, setSelectedCity] = useState("Visas pilsētas");
   const [showFilters, setShowFilters] = useState(false);
 
-  const filteredListings = allListings.filter((listing) => {
-    const matchesSearch =
-      listing.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      listing.organization.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      listing.description.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesCategory =
-      selectedCategory === "Visi" || listing.category === selectedCategory;
-    
-    const matchesCity =
-      selectedCity === "Visas pilsētas" || listing.location === selectedCity;
-
-    return matchesSearch && matchesCategory && matchesCity;
+  const { data: listings, isLoading, error } = useListings({
+    category: selectedCategory,
+    city: selectedCity,
+    search: searchQuery,
   });
 
   const activeFiltersCount = [
@@ -279,7 +182,7 @@ const Listings = () => {
           {/* Results Count */}
           <div className="flex items-center justify-between mb-6">
             <p className="text-muted-foreground">
-              Atrasti <span className="font-semibold text-foreground">{filteredListings.length}</span> sludinājumi
+              Atrasti <span className="font-semibold text-foreground">{listings?.length || 0}</span> sludinājumi
             </p>
             <Select defaultValue="newest">
               <SelectTrigger className="w-[180px]">
@@ -294,9 +197,33 @@ const Listings = () => {
           </div>
 
           {/* Listings Grid */}
-          {filteredListings.length > 0 ? (
+          {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredListings.map((listing, index) => (
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="bg-card rounded-xl border border-border p-5">
+                  <Skeleton className="h-6 w-24 mb-4" />
+                  <Skeleton className="h-6 w-full mb-2" />
+                  <Skeleton className="h-4 w-32 mb-3" />
+                  <Skeleton className="h-16 w-full mb-4" />
+                  <Skeleton className="h-10 w-full" />
+                </div>
+              ))}
+            </div>
+          ) : error ? (
+            <div className="text-center py-16">
+              <div className="w-20 h-20 rounded-full bg-destructive/10 flex items-center justify-center mx-auto mb-6">
+                <X className="w-8 h-8 text-destructive" />
+              </div>
+              <h3 className="text-xl font-semibold text-foreground mb-2">
+                Kļūda ielādējot sludinājumus
+              </h3>
+              <p className="text-muted-foreground mb-6">
+                Mēģiniet vēlreiz vēlāk
+              </p>
+            </div>
+          ) : listings && listings.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {listings.map((listing, index) => (
                 <ListingCard key={listing.id} listing={listing} index={index} />
               ))}
             </div>
