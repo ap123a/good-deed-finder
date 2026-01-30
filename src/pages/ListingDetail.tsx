@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   MapPin,
   Clock,
@@ -21,75 +22,9 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
-
-// Mock data - in real app would come from API
-const listingData = {
-  id: "1",
-  title: "Palīdzība dzīvnieku patversmē",
-  organization: "Dzīvnieku draugi",
-  location: "Rīga, Mārupes novads",
-  category: "Dzīvnieki",
-  description: `Meklējam brīvprātīgos, kas palīdzētu rūpēties par kaķiem un suņiem mūsu patversmē. 
-
-Darba pienākumi:
-• Dzīvnieku barošana un ūdens maiņa
-• Pastaigas ar suņiem
-• Spēlēšanās un socializēšana ar dzīvniekiem
-• Palīdzība telpu uzkopšanā
-• Dzīvnieku transportēšana pie veterinārārsta (ja ir auto)
-
-Mūsu patversmē pašlaik ir aptuveni 50 suņi un 30 kaķi, kuriem nepieciešama uzmanība un rūpes. Katrs brīvprātīgais var atrast sev piemērotu lomu atkarībā no laika un spējām.`,
-  requirements: [
-    "Mīlestība pret dzīvniekiem",
-    "Vecums vismaz 16 gadi (nepilngadīgajiem - vecāku piekrišana)",
-    "Spēja strādāt fiziska rakstura darbus",
-    "Punktualitāte un atbildība",
-    "Gatavība strādāt brīvā dabā jebkuros laika apstākļos",
-  ],
-  benefits: [
-    "Rekomendācijas vēstule",
-    "Bezmaksas apmācības darbam ar dzīvniekiem",
-    "Sertifikāts par brīvprātīgo darbu",
-    "Iespēja adoptēt dzīvnieku ar atlaidi",
-  ],
-  timeCommitment: "4-8h nedēļā",
-  schedule: "Elastīgs grafiks, iespējams strādāt arī nedēļas nogalēs",
-  spots: 5,
-  startDate: "Tūlītēja uzsākšana",
-  isUrgent: false,
-  isNew: true,
-  rating: 4.8,
-  reviewCount: 24,
-  contact: {
-    name: "Māra Liepiņa",
-    email: "mara@dzivniekudraugi.lv",
-    phone: "+371 2000 1234",
-  },
-};
-
-const reviews = [
-  {
-    id: "1",
-    author: "Līva K.",
-    rating: 5,
-    date: "2024-01-15",
-    content: "Lieliska pieredze! Personāls ir ļoti atsaucīgs un dzīvnieki ir brīnišķīgi. Noteikti turpināšu šeit strādāt.",
-  },
-  {
-    id: "2",
-    author: "Artūrs B.",
-    rating: 5,
-    date: "2024-01-10",
-    content: "Patversme ir labi organizēta, brīvprātīgajiem tiek sniegts viss nepieciešamais atbalsts. Ieteiktu visiem dzīvnieku mīļiem.",
-  },
-  {
-    id: "3",
-    author: "Kristīne M.",
-    rating: 4,
-    date: "2024-01-05",
-    content: "Jauks kolektīvs un patīkama atmosfēra. Vienīgais mīnuss - dažreiz ir grūti nokļūt ar sabiedrisko transportu.",
-  },
-];
+import { useListing } from "@/hooks/useListings";
+import { useOrganizationReviews, useOrganizationStats } from "@/hooks/useReviews";
+import { useSubmitApplication } from "@/hooks/useApplications";
 
 const ListingDetail = () => {
   const { id } = useParams();
@@ -103,20 +38,101 @@ const ListingDetail = () => {
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  const { data: listing, isLoading: isLoadingListing, error: listingError } = useListing(id || "");
+  const { data: reviews } = useOrganizationReviews(listing?.organization_id || "");
+  const { data: stats } = useOrganizationStats(listing?.organization_id || "");
+  const submitApplication = useSubmitApplication();
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate form submission
-    setIsSubmitted(true);
-    toast({
-      title: "Pieteikums nosūtīts!",
-      description: "Organizācija ar tevi sazināsies tuvākajā laikā.",
-    });
+    
+    if (!id) return;
+
+    try {
+      await submitApplication.mutateAsync({
+        listing_id: id,
+        full_name: formData.name,
+        email: formData.email,
+        phone: formData.phone || undefined,
+        motivation: formData.motivation,
+      });
+      
+      setIsSubmitted(true);
+      toast({
+        title: "Pieteikums nosūtīts!",
+        description: "Organizācija ar tevi sazināsies tuvākajā laikā.",
+      });
+    } catch (error) {
+      toast({
+        title: "Kļūda",
+        description: "Neizdevās nosūtīt pieteikumu. Mēģiniet vēlreiz.",
+        variant: "destructive",
+      });
+    }
   };
+
+  if (isLoadingListing) {
+    return (
+      <Layout>
+        <div className="bg-secondary/50 py-4">
+          <div className="container">
+            <Skeleton className="h-6 w-48" />
+          </div>
+        </div>
+        <section className="py-8 md:py-12">
+          <div className="container">
+            <div className="grid lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2 space-y-8">
+                <div>
+                  <Skeleton className="h-8 w-24 mb-4" />
+                  <Skeleton className="h-10 w-full mb-4" />
+                  <Skeleton className="h-6 w-64 mb-6" />
+                </div>
+                <div className="bg-card rounded-xl border border-border p-6">
+                  <Skeleton className="h-6 w-32 mb-4" />
+                  <Skeleton className="h-32 w-full" />
+                </div>
+              </div>
+              <div>
+                <div className="bg-card rounded-xl border border-border p-6">
+                  <Skeleton className="h-24 w-full mb-4" />
+                  <Skeleton className="h-12 w-full" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </Layout>
+    );
+  }
+
+  if (listingError || !listing) {
+    return (
+      <Layout>
+        <div className="container py-16 text-center">
+          <h1 className="text-2xl font-bold text-foreground mb-4">Sludinājums nav atrasts</h1>
+          <p className="text-muted-foreground mb-6">Šis sludinājums neeksistē vai ir noņemts.</p>
+          <Button asChild>
+            <Link to="/listings">Atgriezties uz sludinājumiem</Link>
+          </Button>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Parse requirements and benefits if they exist
+  const requirements = listing.requirements
+    ? listing.requirements.split("\n").filter(Boolean)
+    : ["Mīlestība pret darbu", "Atbildība un punktualitāte"];
+
+  const benefits = listing.benefits
+    ? listing.benefits.split("\n").filter(Boolean)
+    : ["Rekomendācijas vēstule", "Jauna pieredze"];
 
   return (
     <Layout>
@@ -145,29 +161,32 @@ const ListingDetail = () => {
                 transition={{ duration: 0.5 }}
               >
                 <div className="flex flex-wrap gap-2 mb-4">
-                  <Badge variant="secondary">{listingData.category}</Badge>
-                  {listingData.isNew && <Badge variant="new">Jauns</Badge>}
-                  {listingData.isUrgent && <Badge variant="urgent">Steidzami</Badge>}
+                  <Badge variant="secondary">{listing.category}</Badge>
+                  {listing.is_new && <Badge variant="new">Jauns</Badge>}
+                  {listing.is_urgent && <Badge variant="urgent">Steidzami</Badge>}
+                  {listing.is_online && <Badge variant="online">Tiešsaistē</Badge>}
                 </div>
 
                 <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                  {listingData.title}
+                  {listing.title}
                 </h1>
 
                 <div className="flex flex-wrap items-center gap-4 text-muted-foreground mb-6">
                   <div className="flex items-center gap-2">
                     <Building2 className="h-5 w-5 shrink-0" />
-                    <span className="font-medium text-foreground">{listingData.organization}</span>
+                    <span className="font-medium text-foreground">{listing.organizations.name}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <MapPin className="h-5 w-5 shrink-0" />
-                    <span>{listingData.location}</span>
+                    <span>{listing.location}</span>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <Star className="h-5 w-5 text-warning fill-warning" />
-                    <span className="font-medium text-foreground">{listingData.rating}</span>
-                    <span className="text-muted-foreground">({listingData.reviewCount} atsauksmes)</span>
-                  </div>
+                  {stats && stats.reviewCount > 0 && (
+                    <div className="flex items-center gap-1.5">
+                      <Star className="h-5 w-5 text-warning fill-warning" />
+                      <span className="font-medium text-foreground">{stats.averageRating}</span>
+                      <span className="text-muted-foreground">({stats.reviewCount} atsauksmes)</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Quick Actions */}
@@ -192,7 +211,7 @@ const ListingDetail = () => {
               >
                 <h2 className="text-xl font-semibold text-foreground mb-4">Par darbu</h2>
                 <div className="prose prose-sm max-w-none text-muted-foreground whitespace-pre-line">
-                  {listingData.description}
+                  {listing.description}
                 </div>
               </motion.div>
 
@@ -205,7 +224,7 @@ const ListingDetail = () => {
               >
                 <h2 className="text-xl font-semibold text-foreground mb-4">Prasības</h2>
                 <ul className="space-y-3">
-                  {listingData.requirements.map((req, index) => (
+                  {requirements.map((req, index) => (
                     <li key={index} className="flex items-start gap-3">
                       <CheckCircle2 className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                       <span className="text-muted-foreground">{req}</span>
@@ -223,7 +242,7 @@ const ListingDetail = () => {
               >
                 <h2 className="text-xl font-semibold text-foreground mb-4">Ko tu iegūsi</h2>
                 <ul className="space-y-3">
-                  {listingData.benefits.map((benefit, index) => (
+                  {benefits.map((benefit, index) => (
                     <li key={index} className="flex items-start gap-3">
                       <Heart className="h-5 w-5 text-accent shrink-0 mt-0.5" />
                       <span className="text-muted-foreground">{benefit}</span>
@@ -233,50 +252,60 @@ const ListingDetail = () => {
               </motion.div>
 
               {/* Reviews */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                className="bg-card rounded-xl border border-border p-6"
-              >
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-semibold text-foreground">Atsauksmes</h2>
-                  <div className="flex items-center gap-2">
-                    <Star className="h-5 w-5 text-warning fill-warning" />
-                    <span className="font-semibold text-foreground">{listingData.rating}</span>
-                    <span className="text-muted-foreground">({listingData.reviewCount})</span>
-                  </div>
-                </div>
-
-                <div className="space-y-6">
-                  {reviews.map((review) => (
-                    <div key={review.id} className="border-b border-border last:border-0 pb-6 last:pb-0">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-sm font-semibold text-primary">
-                            {review.author.charAt(0)}
-                          </div>
-                          <div>
-                            <div className="font-medium text-foreground">{review.author}</div>
-                            <div className="text-sm text-muted-foreground">{review.date}</div>
-                          </div>
-                        </div>
-                        <div className="flex gap-0.5">
-                          {Array.from({ length: 5 }).map((_, i) => (
-                            <Star
-                              key={i}
-                              className={`w-4 h-4 ${
-                                i < review.rating ? "text-warning fill-warning" : "text-muted"
-                              }`}
-                            />
-                          ))}
-                        </div>
+              {reviews && reviews.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  className="bg-card rounded-xl border border-border p-6"
+                >
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-semibold text-foreground">Atsauksmes</h2>
+                    {stats && (
+                      <div className="flex items-center gap-2">
+                        <Star className="h-5 w-5 text-warning fill-warning" />
+                        <span className="font-semibold text-foreground">{stats.averageRating}</span>
+                        <span className="text-muted-foreground">({stats.reviewCount})</span>
                       </div>
-                      <p className="text-muted-foreground text-sm">{review.content}</p>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
+                    )}
+                  </div>
+
+                  <div className="space-y-6">
+                    {reviews.map((review) => (
+                      <div key={review.id} className="border-b border-border last:border-0 pb-6 last:pb-0">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-sm font-semibold text-primary">
+                              {(review.profiles?.full_name || "A").charAt(0)}
+                            </div>
+                            <div>
+                              <div className="font-medium text-foreground">
+                                {review.profiles?.full_name || "Anonīms"}
+                              </div>
+                              <div className="text-sm text-muted-foreground">
+                                {new Date(review.created_at).toLocaleDateString("lv-LV")}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex gap-0.5">
+                            {Array.from({ length: 5 }).map((_, i) => (
+                              <Star
+                                key={i}
+                                className={`w-4 h-4 ${
+                                  i < review.rating ? "text-warning fill-warning" : "text-muted"
+                                }`}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                        {review.comment && (
+                          <p className="text-muted-foreground text-sm">{review.comment}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
             </div>
 
             {/* Sidebar */}
@@ -296,7 +325,9 @@ const ListingDetail = () => {
                       </div>
                       <div>
                         <div className="text-sm text-muted-foreground">Laika ieguldījums</div>
-                        <div className="font-medium text-foreground">{listingData.timeCommitment}</div>
+                        <div className="font-medium text-foreground">
+                          {listing.time_commitment || "Nav norādīts"}
+                        </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
@@ -305,7 +336,7 @@ const ListingDetail = () => {
                       </div>
                       <div>
                         <div className="text-sm text-muted-foreground">Brīvās vietas</div>
-                        <div className="font-medium text-foreground">{listingData.spots} vietas</div>
+                        <div className="font-medium text-foreground">{listing.spots || 1} vietas</div>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
@@ -314,7 +345,7 @@ const ListingDetail = () => {
                       </div>
                       <div>
                         <div className="text-sm text-muted-foreground">Sākums</div>
-                        <div className="font-medium text-foreground">{listingData.startDate}</div>
+                        <div className="font-medium text-foreground">Tūlītēja uzsākšana</div>
                       </div>
                     </div>
                   </div>
@@ -387,8 +418,13 @@ const ListingDetail = () => {
                               placeholder="Pastāsti, kāpēc vēlies piedalīties..."
                             />
                           </div>
-                          <Button type="submit" variant="default" className="w-full">
-                            Nosūtīt pieteikumu
+                          <Button 
+                            type="submit" 
+                            variant="default" 
+                            className="w-full"
+                            disabled={submitApplication.isPending}
+                          >
+                            {submitApplication.isPending ? "Nosūta..." : "Nosūtīt pieteikumu"}
                           </Button>
                         </form>
                       </>
@@ -415,11 +451,18 @@ const ListingDetail = () => {
                   transition={{ duration: 0.5, delay: 0.2 }}
                   className="bg-secondary/50 rounded-xl p-6"
                 >
-                  <h3 className="text-lg font-semibold text-foreground mb-4">Kontaktpersona</h3>
+                  <h3 className="text-lg font-semibold text-foreground mb-4">Organizācija</h3>
                   <div className="space-y-2 text-sm">
-                    <p className="font-medium text-foreground">{listingData.contact.name}</p>
-                    <p className="text-muted-foreground">{listingData.contact.email}</p>
-                    <p className="text-muted-foreground">{listingData.contact.phone}</p>
+                    <p className="font-medium text-foreground">{listing.organizations.name}</p>
+                    {listing.organizations.email && (
+                      <p className="text-muted-foreground">{listing.organizations.email}</p>
+                    )}
+                    {listing.organizations.phone && (
+                      <p className="text-muted-foreground">{listing.organizations.phone}</p>
+                    )}
+                    {listing.organizations.description && (
+                      <p className="text-muted-foreground mt-3">{listing.organizations.description}</p>
+                    )}
                   </div>
                 </motion.div>
               </div>

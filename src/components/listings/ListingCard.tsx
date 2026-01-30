@@ -3,24 +3,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MapPin, Clock, Users, Building2, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
-
-export interface Listing {
-  id: string;
-  title: string;
-  organization: string;
-  location: string;
-  category: string;
-  description: string;
-  timeCommitment: string;
-  spots: number;
-  isUrgent?: boolean;
-  isNew?: boolean;
-  isOnline?: boolean;
-  image?: string;
-}
+import { ListingCardData } from "@/types/database";
 
 interface ListingCardProps {
-  listing: Listing;
+  listing: ListingCardData;
   index?: number;
 }
 
