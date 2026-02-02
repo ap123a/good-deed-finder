@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Heart, User, Search } from "lucide-react";
+import { Menu, X, Heart, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { user, signOut, loading } = useAuth();
 
   const navLinks = [
     { href: "/", label: "Sākums" },
@@ -16,6 +18,11 @@ const Header = () => {
   ];
 
   const isActive = (path: string) => location.pathname === path;
+
+  const handleSignOut = async () => {
+    await signOut();
+    setIsMenuOpen(false);
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-md">
@@ -47,15 +54,30 @@ const Header = () => {
 
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center gap-3">
-          <Button variant="ghost" size="icon" aria-label="Meklēt">
-            <Search className="h-5 w-5" />
-          </Button>
-          <Button variant="outline" asChild>
-            <Link to="/login">Ieiet</Link>
-          </Button>
-          <Button variant="default" asChild>
-            <Link to="/register">Reģistrēties</Link>
-          </Button>
+          {!loading && (
+            <>
+              {user ? (
+                <>
+                  <span className="text-sm text-muted-foreground">
+                    {user.user_metadata?.full_name || user.email}
+                  </span>
+                  <Button variant="outline" onClick={handleSignOut}>
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Iziet
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="outline" asChild>
+                    <Link to="/login">Ieiet</Link>
+                  </Button>
+                  <Button variant="default" asChild>
+                    <Link to="/register">Reģistrēties</Link>
+                  </Button>
+                </>
+              )}
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -94,12 +116,30 @@ const Header = () => {
                 </Link>
               ))}
               <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-border">
-                <Button variant="outline" asChild className="w-full">
-                  <Link to="/login">Ieiet</Link>
-                </Button>
-                <Button variant="default" asChild className="w-full">
-                  <Link to="/register">Reģistrēties</Link>
-                </Button>
+                {!loading && (
+                  <>
+                    {user ? (
+                      <>
+                        <div className="px-4 py-2 text-sm text-muted-foreground">
+                          {user.user_metadata?.full_name || user.email}
+                        </div>
+                        <Button variant="outline" onClick={handleSignOut} className="w-full">
+                          <LogOut className="h-4 w-4 mr-2" />
+                          Iziet
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button variant="outline" asChild className="w-full">
+                          <Link to="/login" onClick={() => setIsMenuOpen(false)}>Ieiet</Link>
+                        </Button>
+                        <Button variant="default" asChild className="w-full">
+                          <Link to="/register" onClick={() => setIsMenuOpen(false)}>Reģistrēties</Link>
+                        </Button>
+                      </>
+                    )}
+                  </>
+                )}
               </div>
             </nav>
           </motion.div>
