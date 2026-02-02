@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ReviewWithProfile } from "@/types/database";
+import { Review } from "@/types/database";
 
 export const useOrganizationReviews = (organizationId: string) => {
   return useQuery({
@@ -8,15 +8,12 @@ export const useOrganizationReviews = (organizationId: string) => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("reviews")
-        .select(`
-          *,
-          profiles (*)
-        `)
+        .select("*")
         .eq("organization_id", organizationId)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data as unknown as ReviewWithProfile[];
+      return data as Review[];
     },
     enabled: !!organizationId,
   });
@@ -28,15 +25,12 @@ export const useListingReviews = (listingId: string) => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("reviews")
-        .select(`
-          *,
-          profiles (*)
-        `)
+        .select("*")
         .eq("listing_id", listingId)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data as unknown as ReviewWithProfile[];
+      return data as Review[];
     },
     enabled: !!listingId,
   });
