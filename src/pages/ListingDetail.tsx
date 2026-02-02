@@ -276,11 +276,11 @@ const ListingDetail = () => {
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-sm font-semibold text-primary">
-                              {(review.profiles?.full_name || "A").charAt(0)}
+                              A
                             </div>
                             <div>
                               <div className="font-medium text-foreground">
-                                {review.profiles?.full_name || "Anonīms"}
+                                Anonīms
                               </div>
                               <div className="text-sm text-muted-foreground">
                                 {new Date(review.created_at).toLocaleDateString("lv-LV")}
