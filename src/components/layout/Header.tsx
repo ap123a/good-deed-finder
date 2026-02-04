@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Heart, LogOut } from "lucide-react";
+import { Menu, X, Heart, LogOut, FileText } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -58,6 +58,12 @@ const Header = () => {
             <>
               {user ? (
                 <>
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link to="/my-listings">
+                      <FileText className="h-4 w-4 mr-2" />
+                      Mani sludinājumi
+                    </Link>
+                  </Button>
                   <span className="text-sm text-muted-foreground">
                     {user.user_metadata?.full_name || user.email}
                   </span>
@@ -123,6 +129,12 @@ const Header = () => {
                         <div className="px-4 py-2 text-sm text-muted-foreground">
                           {user.user_metadata?.full_name || user.email}
                         </div>
+                        <Button variant="ghost" asChild className="w-full justify-start">
+                          <Link to="/my-listings" onClick={() => setIsMenuOpen(false)}>
+                            <FileText className="h-4 w-4 mr-2" />
+                            Mani sludinājumi
+                          </Link>
+                        </Button>
                         <Button variant="outline" onClick={handleSignOut} className="w-full">
                           <LogOut className="h-4 w-4 mr-2" />
                           Iziet
