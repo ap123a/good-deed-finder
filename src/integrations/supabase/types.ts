@@ -82,6 +82,7 @@ export type Database = {
           time_commitment: string | null
           title: string
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           benefits?: string | null
@@ -100,6 +101,7 @@ export type Database = {
           time_commitment?: string | null
           title: string
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           benefits?: string | null
@@ -118,6 +120,7 @@ export type Database = {
           time_commitment?: string | null
           title?: string
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: [
           {
