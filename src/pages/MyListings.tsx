@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Navigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useMyListings, useListingApplications, useUpdateApplicationStatus } from "@/hooks/useListingApplications";
@@ -6,20 +5,22 @@ import Layout from "@/components/layout/Layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Loader2, MapPin, Clock, Users, Mail, Phone, FileText, Check, X, Eye } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { lv } from "date-fns/locale";
+import { MessageButton } from "@/components/messages/MessageButton";
 
 const ApplicationCard = ({ 
   application, 
+  listingTitle,
   onApprove, 
   onReject, 
   isUpdating 
 }: { 
   application: any; 
+  listingTitle: string;
   onApprove: () => void; 
   onReject: () => void;
   isUpdating: boolean;
@@ -66,7 +67,12 @@ const ApplicationCard = ({
             </p>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            <MessageButton
+              applicationId={application.id}
+              applicantName={application.full_name}
+              listingTitle={listingTitle}
+            />
             <Dialog>
               <DialogTrigger asChild>
                 <Button variant="outline" size="sm">
@@ -204,6 +210,7 @@ const ListingWithApplications = ({ listing }: { listing: any }) => {
               <ApplicationCard
                 key={application.id}
                 application={application}
+                listingTitle={listing.title}
                 onApprove={() => handleApprove(application.id)}
                 onReject={() => handleReject(application.id)}
                 isUpdating={updateStatus.isPending}

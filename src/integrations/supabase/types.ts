@@ -132,6 +132,41 @@ export type Database = {
           },
         ]
       }
+      messages: {
+        Row: {
+          application_id: string
+          content: string
+          created_at: string
+          id: string
+          is_read: boolean
+          sender_id: string
+        }
+        Insert: {
+          application_id: string
+          content: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          sender_id: string
+        }
+        Update: {
+          application_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organizations: {
         Row: {
           address: string | null
