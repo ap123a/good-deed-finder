@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Heart, LogOut, FileText } from "lucide-react";
+import { Menu, X, Heart, LogOut, FileText, Shield } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
+import { useIsAdmin } from "@/hooks/useAdmin";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const { user, signOut, loading } = useAuth();
+  const { data: isAdmin } = useIsAdmin();
 
   const navLinks = [
     { href: "/", label: "Sākums" },
@@ -64,6 +66,14 @@ const Header = () => {
                       Mani sludinājumi
                     </Link>
                   </Button>
+                  {isAdmin && (
+                    <Button variant="ghost" size="sm" asChild>
+                      <Link to="/admin">
+                        <Shield className="h-4 w-4 mr-2" />
+                        Admin
+                      </Link>
+                    </Button>
+                  )}
                   <span className="text-sm text-muted-foreground">
                     {user.user_metadata?.full_name || user.email}
                   </span>
@@ -135,6 +145,14 @@ const Header = () => {
                             Mani sludinājumi
                           </Link>
                         </Button>
+                        {isAdmin && (
+                          <Button variant="ghost" asChild className="w-full justify-start">
+                            <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
+                              <Shield className="h-4 w-4 mr-2" />
+                              Admin
+                            </Link>
+                          </Button>
+                        )}
                         <Button variant="outline" onClick={handleSignOut} className="w-full">
                           <LogOut className="h-4 w-4 mr-2" />
                           Iziet
