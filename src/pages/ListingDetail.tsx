@@ -25,10 +25,12 @@ import { useToast } from "@/hooks/use-toast";
 import { useListing } from "@/hooks/useListings";
 import { useOrganizationReviews, useOrganizationStats } from "@/hooks/useReviews";
 import { useSubmitApplication } from "@/hooks/useApplications";
+import { useAuth } from "@/contexts/AuthContext";
 
 const ListingDetail = () => {
   const { id } = useParams();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [isApplying, setIsApplying] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -350,14 +352,38 @@ const ListingDetail = () => {
                     </div>
                   </div>
 
-                  <Button
-                    variant="hero"
-                    size="lg"
-                    className="w-full mt-6"
-                    onClick={() => setIsApplying(!isApplying)}
-                  >
-                    Pieteikties
-                  </Button>
+                  {user ? (
+                    <Button
+                      variant="hero"
+                      size="lg"
+                      className="w-full mt-6"
+                      onClick={() => setIsApplying(!isApplying)}
+                    >
+                      Pieteikties
+                    </Button>
+                  ) : (
+                    <div className="mt-6 space-y-3">
+                      <p className="text-sm text-muted-foreground text-center">
+                        Lai pieteiktos, nepieciešams pieslēgties
+                      </p>
+                      <Button
+                        variant="hero"
+                        size="lg"
+                        className="w-full"
+                        asChild
+                      >
+                        <Link to="/login">Pieslēgties</Link>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        className="w-full"
+                        asChild
+                      >
+                        <Link to="/register">Reģistrēties</Link>
+                      </Button>
+                    </div>
+                  )}
                 </motion.div>
 
                 {/* Application Form */}
