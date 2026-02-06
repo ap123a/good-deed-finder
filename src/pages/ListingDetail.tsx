@@ -33,8 +33,6 @@ const ListingDetail = () => {
   const { user } = useAuth();
   const [isApplying, setIsApplying] = useState(false);
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
     phone: "",
     motivation: "",
   });
@@ -58,8 +56,6 @@ const ListingDetail = () => {
     try {
       await submitApplication.mutateAsync({
         listing_id: id,
-        full_name: formData.name,
-        email: formData.email,
         phone: formData.phone || undefined,
         motivation: formData.motivation,
       });
@@ -398,29 +394,6 @@ const ListingDetail = () => {
                       <>
                         <h3 className="text-lg font-semibold text-foreground mb-4">Pieteikuma forma</h3>
                         <form onSubmit={handleSubmit} className="space-y-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="name">Vārds, Uzvārds *</Label>
-                            <Input
-                              id="name"
-                              name="name"
-                              value={formData.name}
-                              onChange={handleInputChange}
-                              required
-                              placeholder="Tavs vārds"
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="email">E-pasts *</Label>
-                            <Input
-                              id="email"
-                              name="email"
-                              type="email"
-                              value={formData.email}
-                              onChange={handleInputChange}
-                              required
-                              placeholder="tavs@epasts.lv"
-                            />
-                          </div>
                           <div className="space-y-2">
                             <Label htmlFor="phone">Telefons</Label>
                             <Input
