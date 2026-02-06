@@ -18,9 +18,13 @@ export const useSubmitApplication = () => {
       // Get current user if logged in
       const { data: { user } } = await supabase.auth.getUser();
 
+      if (!user) {
+        throw new Error("Lai pieteiktos, nepieciešams pieslēgties");
+      }
+
       const applicationData = {
         ...data,
-        user_id: user?.id || null,
+        user_id: user.id,
         status: "pending",
       };
 
