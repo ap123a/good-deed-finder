@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 interface ApplicationData {
@@ -46,6 +46,36 @@ export const useSubmitApplication = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["applications"] });
+      queryClient.invalidateQueries({ queryKey: ["my-applications"] });
     },
+  });
+};
+
+export const useMyApplications = (userId: string | undefined) => {
+  return useQuery({
+    queryKey: ["my-applications", userId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("applications")
+        .select(`
+          *,
+          listings (
+            id,
+            title,
+            location,
+            time_commitment,
+            organizations (
+              id,
+              name
+            )
+          )
+        `)
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!userId,
   });
 };
