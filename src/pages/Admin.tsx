@@ -40,11 +40,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Loader2, Trash2, Edit, Shield, Users, FileText, Star } from "lucide-react";
+import { Loader2, Trash2, Edit, Shield, Users, FileText, Star, Mail } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { lv } from "date-fns/locale";
 import { useState } from "react";
+import ContactMessagesTab from "@/components/admin/ContactMessagesTab";
 
 const Admin = () => {
   const { user, loading: authLoading } = useAuth();
@@ -107,7 +108,7 @@ const Admin = () => {
           </div>
 
           <Tabs defaultValue="listings" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="listings" className="flex items-center gap-2">
                 <FileText className="h-4 w-4" />
                 Sludinājumi
@@ -119,6 +120,10 @@ const Admin = () => {
               <TabsTrigger value="users" className="flex items-center gap-2">
                 <Users className="h-4 w-4" />
                 Lietotāji
+              </TabsTrigger>
+              <TabsTrigger value="messages" className="flex items-center gap-2">
+                <Mail className="h-4 w-4" />
+                Ziņas
               </TabsTrigger>
             </TabsList>
 
@@ -208,6 +213,11 @@ const Admin = () => {
                   )}
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            {/* Contact Messages Tab */}
+            <TabsContent value="messages">
+              <ContactMessagesTab isAdmin={!!isAdmin} />
             </TabsContent>
           </Tabs>
         </div>

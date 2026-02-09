@@ -12,6 +12,7 @@ import {
   Send,
   CheckCircle2,
   MessageCircle,
+  Loader2,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
@@ -21,6 +22,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useSubmitContactMessage } from "@/hooks/useContactMessages";
 
 const faqItems = [
   {
@@ -58,19 +60,30 @@ const Contact = () => {
     subject: "",
     message: "",
   });
+  const submitMessage = useSubmitContactMessage();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitted(true);
-    toast({
-      title: "Ziņa nosūtīta!",
-      description: "Mēs ar tevi sazināsimies tuvākajā laikā.",
-    });
+    try {
+      await submitMessage.mutateAsync(formData);
+      setIsSubmitted(true);
+      setFormData({ name: "", email: "", subject: "", message: "" });
+      toast({
+        title: "Ziņa nosūtīta!",
+        description: "Mēs ar tevi sazināsimies tuvākajā laikā.",
+      });
+    } catch (error) {
+      toast({
+        title: "Kļūda",
+        description: "Neizdevās nosūtīt ziņu. Lūdzu, mēģini vēlreiz.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -164,9 +177,19 @@ const Contact = () => {
                         placeholder="Raksti savu ziņojumu..."
                       />
                     </div>
-                    <Button type="submit" variant="default" size="lg" className="w-full">
-                      <Send className="w-4 h-4" />
-                      Nosūtīt ziņu
+                    <Button 
+                      type="submit" 
+                      variant="default" 
+                      size="lg" 
+                      className="w-full"
+                      disabled={submitMessage.isPending}
+                    >
+                      {submitMessage.isPending ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Send className="w-4 h-4" />
+                      )}
+                      {submitMessage.isPending ? "Sūta..." : "Nosūtīt ziņu"}
                     </Button>
                   </form>
                 ) : (
