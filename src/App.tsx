@@ -12,6 +12,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import PostListing from "./pages/PostListing";
 import MyListings from "./pages/MyListings";
+import MyApplications from "./pages/MyApplications";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             <Route path="/post-listing" element={<PostListing />} />
             <Route path="/my-listings" element={<MyListings />} />
+            <Route path="/my-applications" element={<MyApplications />} />
             <Route path="/admin" element={<Admin />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

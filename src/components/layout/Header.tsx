@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Heart, LogOut, FileText, Shield } from "lucide-react";
+import { Menu, X, Heart, LogOut, FileText, Shield, ClipboardList } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsAdmin } from "@/hooks/useAdmin";
@@ -60,6 +60,12 @@ const Header = () => {
             <>
               {user ? (
                 <>
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link to="/my-applications">
+                      <ClipboardList className="h-4 w-4 mr-2" />
+                      Mani pieteikumi
+                    </Link>
+                  </Button>
                   <Button variant="ghost" size="sm" asChild>
                     <Link to="/my-listings">
                       <FileText className="h-4 w-4 mr-2" />
@@ -139,6 +145,12 @@ const Header = () => {
                         <div className="px-4 py-2 text-sm text-muted-foreground">
                           {user.user_metadata?.full_name || user.email}
                         </div>
+                        <Button variant="ghost" asChild className="w-full justify-start">
+                          <Link to="/my-applications" onClick={() => setIsMenuOpen(false)}>
+                            <ClipboardList className="h-4 w-4 mr-2" />
+                            Mani pieteikumi
+                          </Link>
+                        </Button>
                         <Button variant="ghost" asChild className="w-full justify-start">
                           <Link to="/my-listings" onClick={() => setIsMenuOpen(false)}>
                             <FileText className="h-4 w-4 mr-2" />
