@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { containsProfanity, profanityMessage } from "@/lib/profanityFilter";
 import { Heart, Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,7 +24,8 @@ const registerSchema = z.object({
     .string()
     .trim()
     .min(2, { message: "Vārdam jābūt vismaz 2 rakstzīmēm" })
-    .max(100, { message: "Vārds nedrīkst pārsniegt 100 rakstzīmes" }),
+    .max(100, { message: "Vārds nedrīkst pārsniegt 100 rakstzīmes" })
+    .refine((val) => !containsProfanity(val), { message: profanityMessage }),
   email: z
     .string()
     .trim()
