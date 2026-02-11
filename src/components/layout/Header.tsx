@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Heart, LogOut, FileText, Shield, ClipboardList } from "lucide-react";
+import { Menu, X, Heart, LogOut, FileText, Shield, ClipboardList, UserCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsAdmin } from "@/hooks/useAdmin";
@@ -80,9 +80,12 @@ const Header = () => {
                       </Link>
                     </Button>
                   )}
-                  <span className="text-sm text-muted-foreground">
-                    {user.user_metadata?.full_name || user.email}
-                  </span>
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link to="/profile">
+                      <UserCircle className="h-4 w-4 mr-2" />
+                      {user.user_metadata?.full_name || user.email}
+                    </Link>
+                  </Button>
                   <Button variant="outline" onClick={handleSignOut}>
                     <LogOut className="h-4 w-4 mr-2" />
                     Iziet
@@ -142,9 +145,12 @@ const Header = () => {
                   <>
                     {user ? (
                       <>
-                        <div className="px-4 py-2 text-sm text-muted-foreground">
-                          {user.user_metadata?.full_name || user.email}
-                        </div>
+                        <Button variant="ghost" asChild className="w-full justify-start">
+                          <Link to="/profile" onClick={() => setIsMenuOpen(false)}>
+                            <UserCircle className="h-4 w-4 mr-2" />
+                            {user.user_metadata?.full_name || user.email}
+                          </Link>
+                        </Button>
                         <Button variant="ghost" asChild className="w-full justify-start">
                           <Link to="/my-applications" onClick={() => setIsMenuOpen(false)}>
                             <ClipboardList className="h-4 w-4 mr-2" />
