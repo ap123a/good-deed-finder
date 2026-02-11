@@ -174,6 +174,24 @@ export const useUpdateProfile = () => {
   });
 };
 
+export const useDeleteProfile = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (profileId: string) => {
+      const { error } = await supabase
+        .from("profiles")
+        .delete()
+        .eq("id", profileId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-profiles"] });
+    },
+  });
+};
+
 export const useUpdateReview = () => {
   const queryClient = useQueryClient();
 

@@ -7,6 +7,7 @@ import {
   useAllProfiles,
   useDeleteReview,
   useDeleteListing,
+  useDeleteProfile,
   useUpdateListing,
   useUpdateProfile,
   useUpdateReview,
@@ -57,6 +58,7 @@ const Admin = () => {
 
   const deleteReview = useDeleteReview();
   const deleteListing = useDeleteListing();
+  const deleteProfile = useDeleteProfile();
   const updateListing = useUpdateListing();
   const updateProfile = useUpdateProfile();
   const updateReview = useUpdateReview();
@@ -90,6 +92,13 @@ const Admin = () => {
     deleteListing.mutate(id, {
       onSuccess: () => toast.success("Sludinājums dzēsts"),
       onError: () => toast.error("Kļūda dzēšot sludinājumu"),
+    });
+  };
+
+  const handleDeleteProfile = (id: string) => {
+    deleteProfile.mutate(id, {
+      onSuccess: () => toast.success("Lietotājs dzēsts"),
+      onError: () => toast.error("Kļūda dzēšot lietotāju"),
     });
   };
 
@@ -205,6 +214,8 @@ const Admin = () => {
                           key={profile.id}
                           profile={profile}
                           onUpdate={(data) => updateProfile.mutate({ id: profile.id, ...data })}
+                          onDelete={() => handleDeleteProfile(profile.id)}
+                          isDeleting={deleteProfile.isPending}
                         />
                       ))}
                     </div>
@@ -434,7 +445,7 @@ const ReviewRow = ({ review, onDelete, onUpdate, isDeleting }: any) => {
 };
 
 // Profile Row Component
-const ProfileRow = ({ profile, onUpdate }: any) => {
+const ProfileRow = ({ profile, onUpdate, onDelete, isDeleting }: any) => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     full_name: profile.full_name || "",
@@ -458,46 +469,68 @@ const ProfileRow = ({ profile, onUpdate }: any) => {
           Reģistrēts: {format(new Date(profile.created_at), "d. MMMM, yyyy", { locale: lv })}
         </p>
       </div>
-      <Dialog open={isEditing} onOpenChange={setIsEditing}>
-        <DialogTrigger asChild>
-          <Button variant="outline" size="sm">
-            <Edit className="h-4 w-4" />
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Rediģēt profilu</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label>Vārds</Label>
-              <Input
-                value={formData.full_name}
-                onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-              />
+      <div className="flex gap-2">
+        <Dialog open={isEditing} onOpenChange={setIsEditing}>
+          <DialogTrigger asChild>
+            <Button variant="outline" size="sm">
+              <Edit className="h-4 w-4" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Rediģēt profilu</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>Vārds</Label>
+                <Input
+                  value={formData.full_name}
+                  onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Telefons</Label>
+                <Input
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Bio</Label>
+                <Textarea
+                  value={formData.bio}
+                  onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                  rows={3}
+                />
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label>Telefons</Label>
-              <Input
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Bio</Label>
-              <Textarea
-                value={formData.bio}
-                onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                rows={3}
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsEditing(false)}>Atcelt</Button>
-            <Button onClick={handleSave}>Saglabāt</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsEditing(false)}>Atcelt</Button>
+              <Button onClick={handleSave}>Saglabāt</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="destructive" size="sm" disabled={isDeleting}>
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Dzēst lietotāju?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Šī darbība ir neatgriezeniska. Lietotāja profils tiks pilnībā dzēsts.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Atcelt</AlertDialogCancel>
+              <AlertDialogAction onClick={onDelete}>Dzēst</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
     </div>
   );
 };
