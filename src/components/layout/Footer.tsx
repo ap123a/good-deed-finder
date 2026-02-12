@@ -72,7 +72,6 @@ const Footer = () => {
             <ul className="space-y-3">
               {[
                 { href: "/post-listing", label: "Publicēt sludinājumu" },
-                { href: "/pricing", label: "Cenas" },
                 { href: "/resources", label: "Resursi" },
                 { href: "/success-stories", label: "Veiksmes stāsti" },
               ].map((link) => (
