@@ -280,6 +280,8 @@ export type Database = {
           listing_id: string | null
           organization_id: string
           rating: number
+          review_type: string
+          reviewed_user_id: string | null
           user_id: string
         }
         Insert: {
@@ -289,6 +291,8 @@ export type Database = {
           listing_id?: string | null
           organization_id: string
           rating: number
+          review_type?: string
+          reviewed_user_id?: string | null
           user_id: string
         }
         Update: {
@@ -298,6 +302,8 @@ export type Database = {
           listing_id?: string | null
           organization_id?: string
           rating?: number
+          review_type?: string
+          reviewed_user_id?: string | null
           user_id?: string
         }
         Relationships: [
