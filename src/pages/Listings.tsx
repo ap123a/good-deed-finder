@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Checkbox } from "@/components/ui/checkbox";
 import { 
   Search, 
   MapPin, 
@@ -42,27 +43,48 @@ const cities = [
   "Tiešsaiste",
 ];
 
+const timeCommitments = [
+  "Visi",
+  "Dažas stundas",
+  "Viena diena",
+  "Katru nedēļu",
+  "Katru mēnesi",
+  "Ilgtermiņa",
+];
+
 const Listings = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Visi");
   const [selectedCity, setSelectedCity] = useState("Visas pilsētas");
   const [showFilters, setShowFilters] = useState(false);
+  const [isOnline, setIsOnline] = useState(false);
+  const [isUrgent, setIsUrgent] = useState(false);
+  const [selectedTimeCommitment, setSelectedTimeCommitment] = useState("Visi");
 
   const { data: listings, isLoading, error } = useListings({
     category: selectedCategory,
     city: selectedCity,
     search: searchQuery,
+    isOnline: isOnline || undefined,
+    isUrgent: isUrgent || undefined,
+    timeCommitment: selectedTimeCommitment,
   });
 
   const activeFiltersCount = [
     selectedCategory !== "Visi",
     selectedCity !== "Visas pilsētas",
+    isOnline,
+    isUrgent,
+    selectedTimeCommitment !== "Visi",
   ].filter(Boolean).length;
 
   const clearFilters = () => {
     setSelectedCategory("Visi");
     setSelectedCity("Visas pilsētas");
     setSearchQuery("");
+    setIsOnline(false);
+    setIsUrgent(false);
+    setSelectedTimeCommitment("Visi");
   };
 
   return (
@@ -152,9 +174,9 @@ const Listings = () => {
                 transition={{ duration: 0.2 }}
                 className="mb-8 overflow-hidden"
               >
-                <div className="bg-card rounded-xl border border-border p-6">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-                    <h3 className="font-semibold text-foreground">Kategorijas</h3>
+                <div className="bg-card rounded-xl border border-border p-6 space-y-6">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <h3 className="font-semibold text-foreground">Filtri</h3>
                     {activeFiltersCount > 0 && (
                       <Button variant="ghost" size="sm" onClick={clearFilters}>
                         <X className="h-4 w-4 mr-1" />
@@ -162,17 +184,47 @@ const Listings = () => {
                       </Button>
                     )}
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    {categories.map((category) => (
-                      <Button
-                        key={category}
-                        variant={selectedCategory === category ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setSelectedCategory(category)}
-                      >
-                        {category}
-                      </Button>
-                    ))}
+
+                  {/* Categories */}
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground mb-2">Kategorijas</p>
+                    <div className="flex flex-wrap gap-2">
+                      {categories.map((category) => (
+                        <Button
+                          key={category}
+                          variant={selectedCategory === category ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setSelectedCategory(category)}
+                        >
+                          {category}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Checkboxes + Time Commitment */}
+                  <div className="flex flex-wrap items-center gap-6">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <Checkbox checked={isOnline} onCheckedChange={(v) => setIsOnline(!!v)} />
+                      <span className="text-sm text-foreground">Tiešsaistē</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <Checkbox checked={isUrgent} onCheckedChange={(v) => setIsUrgent(!!v)} />
+                      <span className="text-sm text-foreground">Steidzami</span>
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-muted-foreground">Laika ieguldījums:</span>
+                      <Select value={selectedTimeCommitment} onValueChange={setSelectedTimeCommitment}>
+                        <SelectTrigger className="w-[160px] h-9">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {timeCommitments.map((tc) => (
+                            <SelectItem key={tc} value={tc}>{tc}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                 </div>
               </motion.div>
