@@ -106,7 +106,7 @@ export type Database = {
           is_online: boolean | null
           is_urgent: boolean | null
           location: string
-          organization_id: string
+          organization_id: string | null
           requirements: string | null
           spots: number | null
           time_commitment: string | null
@@ -125,7 +125,7 @@ export type Database = {
           is_online?: boolean | null
           is_urgent?: boolean | null
           location: string
-          organization_id: string
+          organization_id?: string | null
           requirements?: string | null
           spots?: number | null
           time_commitment?: string | null
@@ -144,7 +144,7 @@ export type Database = {
           is_online?: boolean | null
           is_urgent?: boolean | null
           location?: string
-          organization_id?: string
+          organization_id?: string | null
           requirements?: string | null
           spots?: number | null
           time_commitment?: string | null
