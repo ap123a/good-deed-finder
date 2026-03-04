@@ -322,6 +322,7 @@ const ListingDetail = () => {
                   />
                 </motion.div>
               )}
+            </div>
 
             {/* Sidebar */}
             <div className="lg:col-span-1">
