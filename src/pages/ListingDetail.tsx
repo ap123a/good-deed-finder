@@ -26,6 +26,7 @@ import { useListing } from "@/hooks/useListings";
 import { useOrganizationReviews, useOrganizationStats } from "@/hooks/useReviews";
 import { useSubmitApplication } from "@/hooks/useApplications";
 import { useAuth } from "@/contexts/AuthContext";
+import ReviewForm from "@/components/reviews/ReviewForm";
 
 const ListingDetail = () => {
   const { id } = useParams();
@@ -302,6 +303,23 @@ const ListingDetail = () => {
                       </div>
                     ))}
                   </div>
+                </motion.div>
+              )}
+
+              {/* Review Form */}
+              {user && listing && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.5 }}
+                  className="bg-card rounded-xl border border-border p-6"
+                >
+                  <h2 className="text-xl font-semibold text-foreground mb-4">Atstāt atsauksmi</h2>
+                  <ReviewForm
+                    organizationId={listing.organization_id}
+                    listingId={listing.id}
+                    reviewType="organization"
+                  />
                 </motion.div>
               )}
             </div>

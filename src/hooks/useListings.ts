@@ -21,6 +21,9 @@ export const useListings = (filters?: {
   category?: string;
   city?: string;
   search?: string;
+  isOnline?: boolean;
+  isUrgent?: boolean;
+  timeCommitment?: string;
 }) => {
   return useQuery({
     queryKey: ["listings", filters],
@@ -46,6 +49,18 @@ export const useListings = (filters?: {
         query = query.or(
           `title.ilike.%${filters.search}%,description.ilike.%${filters.search}%`
         );
+      }
+
+      if (filters?.isOnline) {
+        query = query.eq("is_online", true);
+      }
+
+      if (filters?.isUrgent) {
+        query = query.eq("is_urgent", true);
+      }
+
+      if (filters?.timeCommitment && filters.timeCommitment !== "Visi") {
+        query = query.eq("time_commitment", filters.timeCommitment);
       }
 
       const { data, error } = await query;

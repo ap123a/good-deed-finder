@@ -57,6 +57,8 @@ export interface Review {
   user_id: string;
   rating: number;
   comment: string | null;
+  review_type: string;
+  reviewed_user_id: string | null;
   created_at: string;
 }
 
