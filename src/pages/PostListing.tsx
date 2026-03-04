@@ -26,8 +26,6 @@ const postListingSchema = z.object({
   spots: z.coerce.number().min(1, "Jābūt vismaz 1 vietai").default(1),
   requirements: z.string().optional(),
   benefits: z.string().optional(),
-  organizationName: z.string().min(2, "Organizācijas nosaukumam jābūt vismaz 2 rakstzīmēm"),
-  organizationEmail: z.string().email("Ievadi derīgu e-pasta adresi").optional().or(z.literal("")),
   isUrgent: z.boolean().default(false),
   isOnline: z.boolean().default(false),
 });
@@ -97,33 +95,6 @@ const PostListing = () => {
   const onSubmit = async (data: PostListingFormData) => {
     setIsSubmitting(true);
     try {
-      // First, create or find the organization
-      const { data: existingOrg } = await supabase
-        .from("organizations")
-        .select("id")
-        .eq("name", data.organizationName)
-        .single();
-
-      let organizationId: string;
-
-      if (existingOrg) {
-        organizationId = existingOrg.id;
-      } else {
-        // Create new organization
-        const { data: newOrg, error: orgError } = await supabase
-          .from("organizations")
-          .insert({
-            name: data.organizationName,
-            email: data.organizationEmail || null,
-          })
-          .select("id")
-          .single();
-
-        if (orgError) throw orgError;
-        organizationId = newOrg.id;
-      }
-
-      // Create the listing
       const { error: listingError } = await supabase.from("listings").insert({
         title: data.title,
         description: data.description,
@@ -137,7 +108,6 @@ const PostListing = () => {
         is_online: data.isOnline,
         is_new: true,
         is_active: true,
-        organization_id: organizationId,
         user_id: user.id,
       });
 
@@ -166,36 +136,6 @@ const PostListing = () => {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                {/* Organization Info */}
-                <div className="space-y-4">
-                  <h3 className="font-medium text-lg">Organizācijas informācija</h3>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="organizationName">Organizācijas nosaukums *</Label>
-                    <Input
-                      id="organizationName"
-                      placeholder="Piemēram: Latvijas Sarkanais Krusts"
-                      {...register("organizationName")}
-                    />
-                    {errors.organizationName && (
-                      <p className="text-sm text-destructive">{errors.organizationName.message}</p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="organizationEmail">Organizācijas e-pasts</Label>
-                    <Input
-                      id="organizationEmail"
-                      type="email"
-                      placeholder="info@organizacija.lv"
-                      {...register("organizationEmail")}
-                    />
-                    {errors.organizationEmail && (
-                      <p className="text-sm text-destructive">{errors.organizationEmail.message}</p>
-                    )}
-                  </div>
-                </div>
-
                 {/* Listing Info */}
                 <div className="space-y-4">
                   <h3 className="font-medium text-lg">Sludinājuma informācija</h3>

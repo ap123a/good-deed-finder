@@ -171,10 +171,12 @@ const ListingDetail = () => {
                 </h1>
 
                 <div className="flex flex-wrap items-center gap-4 text-muted-foreground mb-6">
-                  <div className="flex items-center gap-2">
-                    <Building2 className="h-5 w-5 shrink-0" />
-                    <span className="font-medium text-foreground">{listing.organizations.name}</span>
-                  </div>
+                  {listing.organizations && (
+                    <div className="flex items-center gap-2">
+                      <Building2 className="h-5 w-5 shrink-0" />
+                      <span className="font-medium text-foreground">{listing.organizations.name}</span>
+                    </div>
+                  )}
                   <div className="flex items-center gap-2">
                     <MapPin className="h-5 w-5 shrink-0" />
                     <span>{listing.location}</span>
@@ -307,7 +309,7 @@ const ListingDetail = () => {
               )}
 
               {/* Review Form */}
-              {user && listing && (
+              {user && listing && listing.organization_id && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}

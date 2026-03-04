@@ -17,7 +17,7 @@ export interface Listing {
   id: string;
   title: string;
   description: string;
-  organization_id: string;
+  organization_id: string | null;
   location: string;
   category: string;
   time_commitment: string | null;
@@ -33,7 +33,7 @@ export interface Listing {
 }
 
 export interface ListingWithOrganization extends Listing {
-  organizations: Organization;
+  organizations: Organization | null;
 }
 
 export interface Application {

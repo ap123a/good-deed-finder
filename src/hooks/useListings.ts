@@ -6,7 +6,7 @@ import { ListingWithOrganization, ListingCardData } from "@/types/database";
 export const transformToCardData = (listing: ListingWithOrganization): ListingCardData => ({
   id: listing.id,
   title: listing.title,
-  organization: listing.organizations.name,
+  organization: listing.organizations?.name || "Privātpersona",
   location: listing.location,
   category: listing.category,
   description: listing.description,
