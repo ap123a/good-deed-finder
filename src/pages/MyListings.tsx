@@ -6,11 +6,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Loader2, MapPin, Clock, Users, Mail, Phone, FileText, Check, X, Eye } from "lucide-react";
+import { Loader2, MapPin, Clock, Users, Mail, Phone, FileText, Check, X, Eye, CheckCircle, Star } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { lv } from "date-fns/locale";
 import { MessageButton } from "@/components/messages/MessageButton";
+import ReviewForm from "@/components/reviews/ReviewForm";
 
 const ApplicationCard = ({ 
   application, 
