@@ -1,6 +1,6 @@
 import { Navigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { useMyListings, useListingApplications, useUpdateApplicationStatus } from "@/hooks/useListingApplications";
+import { useMyListings, useListingApplications, useUpdateApplicationStatus, useMarkListingCompleted } from "@/hooks/useListingApplications";
 import Layout from "@/components/layout/Layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";

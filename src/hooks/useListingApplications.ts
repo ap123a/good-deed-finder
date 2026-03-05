@@ -43,6 +43,24 @@ export const useUpdateApplicationStatus = () => {
   });
 };
 
+export const useMarkListingCompleted = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (listingId: string) => {
+      const { error } = await supabase
+        .from("listings")
+        .update({ is_completed: true, is_active: false })
+        .eq("id", listingId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-listings"] });
+    },
+  });
+};
+
 export const useMyListings = (userId: string | undefined) => {
   return useQuery({
     queryKey: ["my-listings", userId],
