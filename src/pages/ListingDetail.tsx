@@ -174,7 +174,7 @@ const ListingDetail = () => {
                   {listing.organizations && (
                     <div className="flex items-center gap-2">
                       <Building2 className="h-5 w-5 shrink-0" />
-                      <span className="font-medium text-foreground">{listing.organizations.name}</span>
+                      <span className="font-medium text-foreground">{listing.organizations?.name || "Privātpersona"}</span>
                     </div>
                   )}
                   <div className="flex items-center gap-2">
@@ -472,14 +472,14 @@ const ListingDetail = () => {
                 >
                   <h3 className="text-lg font-semibold text-foreground mb-4">Organizācija</h3>
                   <div className="space-y-2 text-sm">
-                    <p className="font-medium text-foreground">{listing.organizations.name}</p>
-                    {listing.organizations.email && (
+                    <p className="font-medium text-foreground">{listing.organizations?.name || "Privātpersona"}</p>
+                    {listing.organizations?.email && (
                       <p className="text-muted-foreground">{listing.organizations.email}</p>
                     )}
-                    {listing.organizations.phone && (
+                    {listing.organizations?.phone && (
                       <p className="text-muted-foreground">{listing.organizations.phone}</p>
                     )}
-                    {listing.organizations.description && (
+                    {listing.organizations?.description && (
                       <p className="text-muted-foreground mt-3">{listing.organizations.description}</p>
                     )}
                   </div>
