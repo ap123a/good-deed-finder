@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Navigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useMyListings, useListingApplications, useUpdateApplicationStatus, useMarkListingCompleted } from "@/hooks/useListingApplications";
@@ -148,6 +149,8 @@ const ApplicationCard = ({
 const ListingWithApplications = ({ listing }: { listing: any }) => {
   const { data: applications, isLoading } = useListingApplications(listing.id);
   const updateStatus = useUpdateApplicationStatus();
+  const markCompleted = useMarkListingCompleted();
+  const [showReviewFor, setShowReviewFor] = useState<string | null>(null);
 
   const handleApprove = (applicationId: string) => {
     updateStatus.mutate(
@@ -169,7 +172,15 @@ const ListingWithApplications = ({ listing }: { listing: any }) => {
     );
   };
 
+  const handleMarkCompleted = () => {
+    markCompleted.mutate(listing.id, {
+      onSuccess: () => toast.success("Sludinājums atzīmēts kā pabeigts!"),
+      onError: () => toast.error("Kļūda atzīmējot sludinājumu"),
+    });
+  };
+
   const pendingCount = applications?.filter(a => a.status === "pending").length || 0;
+  const approvedApplications = applications?.filter(a => a.status === "approved") || [];
 
   return (
     <Card>
@@ -194,9 +205,24 @@ const ListingWithApplications = ({ listing }: { listing: any }) => {
             {pendingCount > 0 && (
               <Badge variant="secondary">{pendingCount} gaida</Badge>
             )}
-            <Badge variant={listing.is_active ? "default" : "outline"}>
-              {listing.is_active ? "Aktīvs" : "Neaktīvs"}
-            </Badge>
+            {listing.is_completed ? (
+              <Badge className="bg-green-100 text-green-800">Pabeigts</Badge>
+            ) : (
+              <>
+                <Badge variant={listing.is_active ? "default" : "outline"}>
+                  {listing.is_active ? "Aktīvs" : "Neaktīvs"}
+                </Badge>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={handleMarkCompleted}
+                  disabled={markCompleted.isPending}
+                >
+                  <CheckCircle className="h-4 w-4 mr-1" />
+                  Pabeigt
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </CardHeader>
@@ -208,14 +234,50 @@ const ListingWithApplications = ({ listing }: { listing: any }) => {
         ) : applications && applications.length > 0 ? (
           <div className="space-y-3">
             {applications.map((application) => (
-              <ApplicationCard
-                key={application.id}
-                application={application}
-                listingTitle={listing.title}
-                onApprove={() => handleApprove(application.id)}
-                onReject={() => handleReject(application.id)}
-                isUpdating={updateStatus.isPending}
-              />
+              <div key={application.id} className="space-y-2">
+                <ApplicationCard
+                  application={application}
+                  listingTitle={listing.title}
+                  onApprove={() => handleApprove(application.id)}
+                  onReject={() => handleReject(application.id)}
+                  isUpdating={updateStatus.isPending}
+                />
+                {listing.is_completed && application.status === "approved" && (
+                  <div className="ml-4">
+                    {showReviewFor === application.id ? (
+                      <div className="border rounded-lg p-4 bg-muted/30">
+                        <h5 className="font-medium mb-2 flex items-center gap-1">
+                          <Star className="h-4 w-4" />
+                          Novērtēt brīvprātīgo: {application.full_name}
+                        </h5>
+                        <ReviewForm
+                          organizationId={listing.organization_id || listing.id}
+                          listingId={listing.id}
+                          reviewType="volunteer"
+                          reviewedUserId={application.user_id || undefined}
+                        />
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="mt-2"
+                          onClick={() => setShowReviewFor(null)}
+                        >
+                          Aizvērt
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowReviewFor(application.id)}
+                      >
+                        <Star className="h-4 w-4 mr-1" />
+                        Novērtēt brīvprātīgo
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         ) : (
