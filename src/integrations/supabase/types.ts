@@ -102,6 +102,7 @@ export type Database = {
           description: string
           id: string
           is_active: boolean | null
+          is_completed: boolean
           is_new: boolean | null
           is_online: boolean | null
           is_urgent: boolean | null
@@ -121,6 +122,7 @@ export type Database = {
           description: string
           id?: string
           is_active?: boolean | null
+          is_completed?: boolean
           is_new?: boolean | null
           is_online?: boolean | null
           is_urgent?: boolean | null
@@ -140,6 +142,7 @@ export type Database = {
           description?: string
           id?: string
           is_active?: boolean | null
+          is_completed?: boolean
           is_new?: boolean | null
           is_online?: boolean | null
           is_urgent?: boolean | null
