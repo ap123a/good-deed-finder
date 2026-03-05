@@ -55,8 +55,7 @@ export const useAllReviews = (enabled: boolean) => {
         .from("reviews")
         .select(`
           *,
-          organizations (name),
-          profiles:user_id (full_name)
+          organizations (name)
         `)
         .order("created_at", { ascending: false });
 
