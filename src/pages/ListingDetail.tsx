@@ -19,6 +19,7 @@ import {
   Star,
   CheckCircle2,
   Heart,
+  User,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
@@ -470,9 +471,20 @@ const ListingDetail = () => {
                   transition={{ duration: 0.5, delay: 0.2 }}
                   className="bg-secondary/50 rounded-xl p-6"
                 >
-                  <h3 className="text-lg font-semibold text-foreground mb-4">Organizācija</h3>
+                  <h3 className="text-lg font-semibold text-foreground mb-4">
+                    {listing.organizations ? "Organizācija" : "Sludinājuma autors"}
+                  </h3>
                   <div className="space-y-2 text-sm">
                     <p className="font-medium text-foreground">{listing.organizations?.name || "Privātpersona"}</p>
+                    {listing.user_id && (
+                      <Link
+                        to={`/profile/${listing.user_id}`}
+                        className="inline-flex items-center gap-1 text-primary hover:underline text-sm"
+                      >
+                        <User className="h-4 w-4" />
+                        Skatīt profilu
+                      </Link>
+                    )}
                     {listing.organizations?.email && (
                       <p className="text-muted-foreground">{listing.organizations.email}</p>
                     )}

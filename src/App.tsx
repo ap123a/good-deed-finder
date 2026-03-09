@@ -15,6 +15,7 @@ import MyListings from "./pages/MyListings";
 import MyApplications from "./pages/MyApplications";
 import Admin from "./pages/Admin";
 import Profile from "./pages/Profile";
+import PublicProfile from "./pages/PublicProfile";
 import About from "./pages/About";
 import HowItWorksPage from "./pages/HowItWorksPage";
 import NotFound from "./pages/NotFound";
@@ -40,6 +41,7 @@ const App = () => (
             <Route path="/my-applications" element={<MyApplications />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/profile/:userId" element={<PublicProfile />} />
             <Route path="/about" element={<About />} />
             <Route path="/how-it-works" element={<HowItWorksPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

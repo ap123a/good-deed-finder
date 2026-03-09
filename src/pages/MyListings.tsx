@@ -45,7 +45,15 @@ const ApplicationCard = ({
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <h4 className="font-semibold">{application.full_name}</h4>
+              <h4 className="font-semibold">
+                {application.user_id ? (
+                  <Link to={`/profile/${application.user_id}`} className="text-primary hover:underline">
+                    {application.full_name}
+                  </Link>
+                ) : (
+                  application.full_name
+                )}
+              </h4>
               <Badge className={statusColors[application.status] || statusColors.pending}>
                 {statusLabels[application.status] || application.status}
               </Badge>
