@@ -15,6 +15,7 @@ import MyListings from "./pages/MyListings";
 import MyApplications from "./pages/MyApplications";
 import Admin from "./pages/Admin";
 import Profile from "./pages/Profile";
+import PublicProfile from "./pages/PublicProfile";
 import About from "./pages/About";
 import HowItWorksPage from "./pages/HowItWorksPage";
 import NotFound from "./pages/NotFound";
