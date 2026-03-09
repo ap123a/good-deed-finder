@@ -41,6 +41,7 @@ const App = () => (
             <Route path="/my-applications" element={<MyApplications />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/profile/:userId" element={<PublicProfile />} />
             <Route path="/about" element={<About />} />
             <Route path="/how-it-works" element={<HowItWorksPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
