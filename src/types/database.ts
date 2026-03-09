@@ -18,6 +18,7 @@ export interface Listing {
   title: string;
   description: string;
   organization_id: string | null;
+  user_id: string | null;
   location: string;
   category: string;
   time_commitment: string | null;
@@ -28,6 +29,7 @@ export interface Listing {
   is_new: boolean | null;
   is_online: boolean | null;
   is_active: boolean | null;
+  is_completed: boolean;
   created_at: string;
   updated_at: string;
 }
