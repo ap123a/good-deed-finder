@@ -151,7 +151,7 @@ const Header = () => {
                         <Button variant="ghost" asChild className="w-full justify-start">
                           <Link to="/profile" onClick={() => setIsMenuOpen(false)}>
                             <UserCircle className="h-4 w-4 mr-2" />
-                            {user.user_metadata?.full_name || user.email}
+                            {displayName}
                           </Link>
                         </Button>
                         <Button variant="ghost" asChild className="w-full justify-start">
