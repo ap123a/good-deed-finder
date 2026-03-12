@@ -86,7 +86,7 @@ const Header = () => {
                   <Button variant="ghost" size="sm" asChild>
                     <Link to="/profile">
                       <UserCircle className="h-4 w-4 mr-2" />
-                      {user.user_metadata?.full_name || user.email}
+                      {displayName}
                     </Link>
                   </Button>
                   <Button variant="outline" onClick={handleSignOut}>
