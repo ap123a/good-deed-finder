@@ -5,6 +5,7 @@ import { Menu, X, Heart, LogOut, FileText, Shield, ClipboardList, UserCircle } f
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsAdmin } from "@/hooks/useAdmin";
+import { useProfile } from "@/hooks/useProfile";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
