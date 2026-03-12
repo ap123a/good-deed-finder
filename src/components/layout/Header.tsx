@@ -12,6 +12,8 @@ const Header = () => {
   const location = useLocation();
   const { user, signOut, loading } = useAuth();
   const { data: isAdmin } = useIsAdmin();
+  const { data: profile } = useProfile(user?.id);
+  const displayName = profile?.full_name || user?.user_metadata?.full_name || user?.email;
 
   const navLinks = [
     { href: "/", label: "Sākums" },
