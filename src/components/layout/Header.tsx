@@ -5,12 +5,15 @@ import { Menu, X, Heart, LogOut, FileText, Shield, ClipboardList, UserCircle } f
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsAdmin } from "@/hooks/useAdmin";
+import { useProfile } from "@/hooks/useProfile";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const { user, signOut, loading } = useAuth();
   const { data: isAdmin } = useIsAdmin();
+  const { data: profile } = useProfile(user?.id);
+  const displayName = profile?.full_name || user?.user_metadata?.full_name || user?.email;
 
   const navLinks = [
     { href: "/", label: "Sākums" },
@@ -83,7 +86,7 @@ const Header = () => {
                   <Button variant="ghost" size="sm" asChild>
                     <Link to="/profile">
                       <UserCircle className="h-4 w-4 mr-2" />
-                      {user.user_metadata?.full_name || user.email}
+                      {displayName}
                     </Link>
                   </Button>
                   <Button variant="outline" onClick={handleSignOut}>
@@ -148,7 +151,7 @@ const Header = () => {
                         <Button variant="ghost" asChild className="w-full justify-start">
                           <Link to="/profile" onClick={() => setIsMenuOpen(false)}>
                             <UserCircle className="h-4 w-4 mr-2" />
-                            {user.user_metadata?.full_name || user.email}
+                            {displayName}
                           </Link>
                         </Button>
                         <Button variant="ghost" asChild className="w-full justify-start">
