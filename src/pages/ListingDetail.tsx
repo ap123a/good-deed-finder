@@ -41,8 +41,8 @@ const ListingDetail = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const { data: listing, isLoading: isLoadingListing, error: listingError } = useListing(id || "");
-  const { data: reviews } = useOrganizationReviews(listing?.organization_id || "");
-  const { data: stats } = useOrganizationStats(listing?.organization_id || "");
+  const { data: reviews } = useListingReviews(listing?.id || "");
+  const { data: stats } = useListingStats(listing?.id || "");
   const submitApplication = useSubmitApplication();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
