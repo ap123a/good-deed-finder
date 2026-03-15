@@ -264,9 +264,6 @@ const ListingRow = ({ listing, onDelete, onUpdate, isDeleting }: any) => {
         </div>
         <p className="text-sm text-muted-foreground">{listing.location}</p>
         <p className="text-xs text-muted-foreground">
-          Organizācija: {listing.organizations?.name || "Nav norādīta"}
-        </p>
-        <p className="text-xs text-muted-foreground">
           {format(new Date(listing.created_at), "d. MMMM, yyyy", { locale: lv })}
         </p>
       </div>
