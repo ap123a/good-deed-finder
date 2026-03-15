@@ -373,9 +373,6 @@ const ReviewRow = ({ review, onDelete, onUpdate, isDeleting }: any) => {
         </div>
         {review.comment && <p className="text-sm">{review.comment}</p>}
         <p className="text-xs text-muted-foreground">
-          Organizācija: {review.organizations?.name || "Nav norādīta"}
-        </p>
-        <p className="text-xs text-muted-foreground">
           {format(new Date(review.created_at), "d. MMMM, yyyy", { locale: lv })}
         </p>
       </div>

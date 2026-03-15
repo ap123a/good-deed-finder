@@ -101,7 +101,7 @@ const MyApplications = () => {
                       </div>
                       <MessageButton
                         applicationId={application.id}
-                        applicantName={application.listings?.organizations?.name || "Organizācija"}
+                        applicantName={application.listings?.title || "Sludinājums"}
                         listingTitle={application.listings?.title || "Sludinājums"}
                       />
                     </div>

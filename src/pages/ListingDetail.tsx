@@ -457,18 +457,15 @@ const ListingDetail = () => {
                   </motion.div>
                 )}
 
-                {/* Organization Contact */}
+                {/* Author Contact */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
                   className="bg-secondary/50 rounded-xl p-6"
                 >
-                  <h3 className="text-lg font-semibold text-foreground mb-4">
-                    {listing.organizations ? "Organizācija" : "Sludinājuma autors"}
-                  </h3>
+                  <h3 className="text-lg font-semibold text-foreground mb-4">Sludinājuma autors</h3>
                   <div className="space-y-2 text-sm">
-                    <p className="font-medium text-foreground">{listing.organizations?.name || "Privātpersona"}</p>
                     {listing.user_id && (
                       <Link
                         to={`/profile/${listing.user_id}`}
@@ -477,15 +474,6 @@ const ListingDetail = () => {
                         <User className="h-4 w-4" />
                         Skatīt profilu
                       </Link>
-                    )}
-                    {listing.organizations?.email && (
-                      <p className="text-muted-foreground">{listing.organizations.email}</p>
-                    )}
-                    {listing.organizations?.phone && (
-                      <p className="text-muted-foreground">{listing.organizations.phone}</p>
-                    )}
-                    {listing.organizations?.description && (
-                      <p className="text-muted-foreground mt-3">{listing.organizations.description}</p>
                     )}
                   </div>
                 </motion.div>
