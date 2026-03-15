@@ -13,14 +13,12 @@ export const useSubmitApplication = () => {
 
   return useMutation({
     mutationFn: async (data: ApplicationData) => {
-      // Get current user
       const { data: { user } } = await supabase.auth.getUser();
 
       if (!user) {
         throw new Error("Lai pieteiktos, nepieciešams pieslēgties");
       }
 
-      // Get user profile for full_name
       const { data: profile } = await supabase
         .from("profiles")
         .select("full_name")
@@ -63,11 +61,7 @@ export const useMyApplications = (userId: string | undefined) => {
             id,
             title,
             location,
-            time_commitment,
-            organizations (
-              id,
-              name
-            )
+            time_commitment
           )
         `)
         .eq("user_id", userId)
