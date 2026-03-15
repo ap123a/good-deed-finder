@@ -24,7 +24,7 @@ import {
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { useListing } from "@/hooks/useListings";
-import { useOrganizationReviews, useOrganizationStats } from "@/hooks/useReviews";
+import { useListingReviews, useListingStats } from "@/hooks/useReviews";
 import { useSubmitApplication } from "@/hooks/useApplications";
 import { useAuth } from "@/contexts/AuthContext";
 import ReviewForm from "@/components/reviews/ReviewForm";
