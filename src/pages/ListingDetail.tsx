@@ -304,7 +304,7 @@ const ListingDetail = () => {
               )}
 
               {/* Review Form */}
-              {user && listing && listing.organization_id && (
+              {user && listing && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -313,9 +313,8 @@ const ListingDetail = () => {
                 >
                   <h2 className="text-xl font-semibold text-foreground mb-4">Atstāt atsauksmi</h2>
                   <ReviewForm
-                    organizationId={listing.organization_id}
                     listingId={listing.id}
-                    reviewType="organization"
+                    reviewType="listing"
                   />
                 </motion.div>
               )}
