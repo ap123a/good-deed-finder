@@ -7,13 +7,12 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface ReviewFormProps {
-  organizationId: string;
-  listingId?: string;
-  reviewType?: "organization" | "volunteer";
+  listingId: string;
+  reviewType?: "listing" | "volunteer";
   reviewedUserId?: string;
 }
 
-const ReviewForm = ({ organizationId, listingId, reviewType = "organization", reviewedUserId }: ReviewFormProps) => {
+const ReviewForm = ({ listingId, reviewType = "listing", reviewedUserId }: ReviewFormProps) => {
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [comment, setComment] = useState("");
@@ -32,7 +31,6 @@ const ReviewForm = ({ organizationId, listingId, reviewType = "organization", re
 
     try {
       await submitReview.mutateAsync({
-        organization_id: organizationId,
         listing_id: listingId,
         rating,
         comment: comment.trim() || undefined,

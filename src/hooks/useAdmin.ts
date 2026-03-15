@@ -34,10 +34,7 @@ export const useAllListings = (enabled: boolean) => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("listings")
-        .select(`
-          *,
-          organizations (name)
-        `)
+        .select("*")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -53,10 +50,7 @@ export const useAllReviews = (enabled: boolean) => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("reviews")
-        .select(`
-          *,
-          organizations (name)
-        `)
+        .select("*, profiles!reviews_user_id_fkey(full_name)")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -103,108 +97,66 @@ export const useAllApplications = (enabled: boolean) => {
 
 export const useDeleteReview = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async (reviewId: string) => {
-      const { error } = await supabase
-        .from("reviews")
-        .delete()
-        .eq("id", reviewId);
-
+      const { error } = await supabase.from("reviews").delete().eq("id", reviewId);
       if (error) throw error;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-reviews"] });
-    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["admin-reviews"] }); },
   });
 };
 
 export const useDeleteListing = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async (listingId: string) => {
-      const { error } = await supabase
-        .from("listings")
-        .delete()
-        .eq("id", listingId);
-
+      const { error } = await supabase.from("listings").delete().eq("id", listingId);
       if (error) throw error;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-listings"] });
-    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["admin-listings"] }); },
   });
 };
 
 export const useUpdateListing = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async ({ id, ...updates }: { id: string; [key: string]: any }) => {
-      const { error } = await supabase
-        .from("listings")
-        .update(updates)
-        .eq("id", id);
-
+      const { error } = await supabase.from("listings").update(updates).eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-listings"] });
-    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["admin-listings"] }); },
   });
 };
 
 export const useUpdateProfile = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async ({ id, ...updates }: { id: string; [key: string]: any }) => {
-      const { error } = await supabase
-        .from("profiles")
-        .update(updates)
-        .eq("id", id);
-
+      const { error } = await supabase.from("profiles").update(updates).eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-profiles"] });
-    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["admin-profiles"] }); },
   });
 };
 
 export const useDeleteProfile = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async (profileId: string) => {
-      const { error } = await supabase
-        .from("profiles")
-        .delete()
-        .eq("id", profileId);
-
+      const { error } = await supabase.from("profiles").delete().eq("id", profileId);
       if (error) throw error;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-profiles"] });
-    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["admin-profiles"] }); },
   });
 };
 
 export const useUpdateReview = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async ({ id, ...updates }: { id: string; [key: string]: any }) => {
-      const { error } = await supabase
-        .from("reviews")
-        .update(updates)
-        .eq("id", id);
-
+      const { error } = await supabase.from("reviews").update(updates).eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-reviews"] });
-    },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["admin-reviews"] }); },
   });
 };

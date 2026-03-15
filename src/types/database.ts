@@ -1,23 +1,9 @@
 // Database types for the application
 
-export interface Organization {
-  id: string;
-  name: string;
-  description: string | null;
-  logo_url: string | null;
-  website: string | null;
-  email: string | null;
-  phone: string | null;
-  address: string | null;
-  created_at: string;
-  updated_at: string;
-}
-
 export interface Listing {
   id: string;
   title: string;
   description: string;
-  organization_id: string | null;
   user_id: string | null;
   location: string;
   category: string;
@@ -32,10 +18,6 @@ export interface Listing {
   is_completed: boolean;
   created_at: string;
   updated_at: string;
-}
-
-export interface ListingWithOrganization extends Listing {
-  organizations: Organization | null;
 }
 
 export interface Application {
@@ -54,7 +36,6 @@ export interface Application {
 
 export interface Review {
   id: string;
-  organization_id: string;
   listing_id: string | null;
   user_id: string;
   rating: number;
@@ -83,7 +64,6 @@ export interface Profile {
 export interface ListingCardData {
   id: string;
   title: string;
-  organization: string;
   location: string;
   category: string;
   description: string;

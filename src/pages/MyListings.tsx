@@ -259,7 +259,6 @@ const ListingWithApplications = ({ listing }: { listing: any }) => {
                           Novērtēt brīvprātīgo: {application.full_name}
                         </h5>
                         <ReviewForm
-                          organizationId={listing.organization_id || listing.id}
                           listingId={listing.id}
                           reviewType="volunteer"
                           reviewedUserId={application.user_id || undefined}

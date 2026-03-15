@@ -107,7 +107,6 @@ export type Database = {
           is_online: boolean | null
           is_urgent: boolean | null
           location: string
-          organization_id: string | null
           requirements: string | null
           spots: number | null
           time_commitment: string | null
@@ -127,7 +126,6 @@ export type Database = {
           is_online?: boolean | null
           is_urgent?: boolean | null
           location: string
-          organization_id?: string | null
           requirements?: string | null
           spots?: number | null
           time_commitment?: string | null
@@ -147,7 +145,6 @@ export type Database = {
           is_online?: boolean | null
           is_urgent?: boolean | null
           location?: string
-          organization_id?: string | null
           requirements?: string | null
           spots?: number | null
           time_commitment?: string | null
@@ -155,15 +152,7 @@ export type Database = {
           updated_at?: string
           user_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "listings_organization_id_fkey"
-            columns: ["organization_id"]
-            isOneToOne: false
-            referencedRelation: "organizations"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       messages: {
         Row: {
@@ -199,45 +188,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      organizations: {
-        Row: {
-          address: string | null
-          created_at: string
-          description: string | null
-          email: string | null
-          id: string
-          logo_url: string | null
-          name: string
-          phone: string | null
-          updated_at: string
-          website: string | null
-        }
-        Insert: {
-          address?: string | null
-          created_at?: string
-          description?: string | null
-          email?: string | null
-          id?: string
-          logo_url?: string | null
-          name: string
-          phone?: string | null
-          updated_at?: string
-          website?: string | null
-        }
-        Update: {
-          address?: string | null
-          created_at?: string
-          description?: string | null
-          email?: string | null
-          id?: string
-          logo_url?: string | null
-          name?: string
-          phone?: string | null
-          updated_at?: string
-          website?: string | null
-        }
-        Relationships: []
       }
       profiles: {
         Row: {
@@ -281,7 +231,6 @@ export type Database = {
           created_at: string
           id: string
           listing_id: string | null
-          organization_id: string
           rating: number
           review_type: string
           reviewed_user_id: string | null
@@ -292,7 +241,6 @@ export type Database = {
           created_at?: string
           id?: string
           listing_id?: string | null
-          organization_id: string
           rating: number
           review_type?: string
           reviewed_user_id?: string | null
@@ -303,7 +251,6 @@ export type Database = {
           created_at?: string
           id?: string
           listing_id?: string | null
-          organization_id?: string
           rating?: number
           review_type?: string
           reviewed_user_id?: string | null
@@ -315,13 +262,6 @@ export type Database = {
             columns: ["listing_id"]
             isOneToOne: false
             referencedRelation: "listings"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "reviews_organization_id_fkey"
-            columns: ["organization_id"]
-            isOneToOne: false
-            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]

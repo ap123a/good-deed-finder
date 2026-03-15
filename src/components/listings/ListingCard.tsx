@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Clock, Users, Building2, ArrowRight } from "lucide-react";
+import { MapPin, Clock, Users, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { ListingCardData } from "@/types/database";
 
@@ -29,15 +29,10 @@ const ListingCard = ({ listing, index = 0 }: ListingCardProps) => {
           </div>
         </div>
 
-        {/* Title & Organization */}
+        {/* Title */}
         <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors mb-2 line-clamp-2">
           {listing.title}
         </h3>
-        
-        <div className="flex items-center gap-2 text-muted-foreground text-sm mb-3">
-          <Building2 className="h-4 w-4 shrink-0" />
-          <span className="truncate">{listing.organization}</span>
-        </div>
 
         {/* Description */}
         <p className="text-sm text-muted-foreground line-clamp-2 mb-4">

@@ -24,7 +24,7 @@ import {
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { useListing } from "@/hooks/useListings";
-import { useOrganizationReviews, useOrganizationStats } from "@/hooks/useReviews";
+import { useListingReviews, useListingStats } from "@/hooks/useReviews";
 import { useSubmitApplication } from "@/hooks/useApplications";
 import { useAuth } from "@/contexts/AuthContext";
 import ReviewForm from "@/components/reviews/ReviewForm";
@@ -41,8 +41,8 @@ const ListingDetail = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const { data: listing, isLoading: isLoadingListing, error: listingError } = useListing(id || "");
-  const { data: reviews } = useOrganizationReviews(listing?.organization_id || "");
-  const { data: stats } = useOrganizationStats(listing?.organization_id || "");
+  const { data: reviews } = useListingReviews(listing?.id || "");
+  const { data: stats } = useListingStats(listing?.id || "");
   const submitApplication = useSubmitApplication();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -172,12 +172,6 @@ const ListingDetail = () => {
                 </h1>
 
                 <div className="flex flex-wrap items-center gap-4 text-muted-foreground mb-6">
-                  {listing.organizations && (
-                    <div className="flex items-center gap-2">
-                      <Building2 className="h-5 w-5 shrink-0" />
-                      <span className="font-medium text-foreground">{listing.organizations?.name || "Privātpersona"}</span>
-                    </div>
-                  )}
                   <div className="flex items-center gap-2">
                     <MapPin className="h-5 w-5 shrink-0" />
                     <span>{listing.location}</span>
@@ -310,7 +304,7 @@ const ListingDetail = () => {
               )}
 
               {/* Review Form */}
-              {user && listing && listing.organization_id && (
+              {user && listing && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -319,9 +313,8 @@ const ListingDetail = () => {
                 >
                   <h2 className="text-xl font-semibold text-foreground mb-4">Atstāt atsauksmi</h2>
                   <ReviewForm
-                    organizationId={listing.organization_id}
                     listingId={listing.id}
-                    reviewType="organization"
+                    reviewType="listing"
                   />
                 </motion.div>
               )}
@@ -464,18 +457,15 @@ const ListingDetail = () => {
                   </motion.div>
                 )}
 
-                {/* Organization Contact */}
+                {/* Author Contact */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
                   className="bg-secondary/50 rounded-xl p-6"
                 >
-                  <h3 className="text-lg font-semibold text-foreground mb-4">
-                    {listing.organizations ? "Organizācija" : "Sludinājuma autors"}
-                  </h3>
+                  <h3 className="text-lg font-semibold text-foreground mb-4">Sludinājuma autors</h3>
                   <div className="space-y-2 text-sm">
-                    <p className="font-medium text-foreground">{listing.organizations?.name || "Privātpersona"}</p>
                     {listing.user_id && (
                       <Link
                         to={`/profile/${listing.user_id}`}
@@ -484,15 +474,6 @@ const ListingDetail = () => {
                         <User className="h-4 w-4" />
                         Skatīt profilu
                       </Link>
-                    )}
-                    {listing.organizations?.email && (
-                      <p className="text-muted-foreground">{listing.organizations.email}</p>
-                    )}
-                    {listing.organizations?.phone && (
-                      <p className="text-muted-foreground">{listing.organizations.phone}</p>
-                    )}
-                    {listing.organizations?.description && (
-                      <p className="text-muted-foreground mt-3">{listing.organizations.description}</p>
                     )}
                   </div>
                 </motion.div>

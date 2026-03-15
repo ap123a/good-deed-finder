@@ -67,7 +67,7 @@ const MyApplications = () => {
                         <CardDescription className="flex flex-wrap items-center gap-3 mt-1">
                           <span className="flex items-center gap-1">
                             <Briefcase className="h-3 w-3" />
-                            {application.listings?.organizations?.name || "Organizācija"}
+                            {application.listings?.title || "Sludinājums"}
                           </span>
                           <span className="flex items-center gap-1">
                             <MapPin className="h-3 w-3" />
@@ -101,7 +101,7 @@ const MyApplications = () => {
                       </div>
                       <MessageButton
                         applicationId={application.id}
-                        applicantName={application.listings?.organizations?.name || "Organizācija"}
+                        applicantName={application.listings?.title || "Sludinājums"}
                         listingTitle={application.listings?.title || "Sludinājums"}
                       />
                     </div>

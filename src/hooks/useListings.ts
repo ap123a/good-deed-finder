@@ -1,12 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ListingWithOrganization, ListingCardData } from "@/types/database";
+import { Listing, ListingCardData } from "@/types/database";
 
 // Transform database listing to card data format
-export const transformToCardData = (listing: ListingWithOrganization): ListingCardData => ({
+export const transformToCardData = (listing: Listing): ListingCardData => ({
   id: listing.id,
   title: listing.title,
-  organization: listing.organizations?.name || "Privātpersona",
   location: listing.location,
   category: listing.category,
   description: listing.description,
@@ -30,10 +29,7 @@ export const useListings = (filters?: {
     queryFn: async () => {
       let query = supabase
         .from("listings")
-        .select(`
-          *,
-          organizations (*)
-        `)
+        .select("*")
         .eq("is_active", true)
         .order("created_at", { ascending: false });
 
@@ -66,7 +62,7 @@ export const useListings = (filters?: {
       const { data, error } = await query;
 
       if (error) throw error;
-      return (data as unknown as ListingWithOrganization[]).map(transformToCardData);
+      return (data as Listing[]).map(transformToCardData);
     },
   });
 };
@@ -77,16 +73,13 @@ export const useFeaturedListings = (limit = 6) => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("listings")
-        .select(`
-          *,
-          organizations (*)
-        `)
+        .select("*")
         .eq("is_active", true)
         .order("created_at", { ascending: false })
         .limit(limit);
 
       if (error) throw error;
-      return (data as unknown as ListingWithOrganization[]).map(transformToCardData);
+      return (data as Listing[]).map(transformToCardData);
     },
   });
 };
@@ -97,15 +90,12 @@ export const useListing = (id: string) => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("listings")
-        .select(`
-          *,
-          organizations (*)
-        `)
+        .select("*")
         .eq("id", id)
         .single();
 
       if (error) throw error;
-      return data as unknown as ListingWithOrganization;
+      return data as Listing;
     },
     enabled: !!id,
   });
