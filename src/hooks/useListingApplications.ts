@@ -67,10 +67,7 @@ export const useMyListings = (userId: string | undefined) => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("listings")
-        .select(`
-          *,
-          organizations (*)
-        `)
+        .select("*")
         .eq("user_id", userId)
         .order("created_at", { ascending: false });
 
